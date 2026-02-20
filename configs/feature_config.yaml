@@ -1,0 +1,18 @@
+time_windows:
+  short: 3600
+  medium: 86400
+  long: 604800
+
+velocity_thresholds:
+  rapid_fire_count: 3
+  rapid_fire_window: 600
+
+critical_features:
+  - log_amount
+  - txn_count_1h
+  - txn_count_24h
+  - amount_zscore
+  - rapid_fire_flag
+  - time_since_last_txn
+  - distance_to_merchant
+  - is_high_risk_category

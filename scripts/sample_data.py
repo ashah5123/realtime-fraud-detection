@@ -81,8 +81,7 @@ def main():
     sample_df = sample_df.head(target_total)
 
     os.makedirs("data/processed", exist_ok=True)
-    out_path = "data/processed/transactions_8k.csv"
-    sample_df.to_csv(out_path, index=False)
+    sample_df.to_csv("data/processed/transactions_8k.csv", index=False)
 
     n_final = len(sample_df)
     fraud_count_final = int((sample_df[fraud_col].astype(int) == 1).sum())

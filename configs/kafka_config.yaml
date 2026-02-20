@@ -1,0 +1,11 @@
+bootstrap_servers: "localhost:9092"
+topics:
+  transactions: "transactions"
+  scored: "scored_transactions"
+  alerts: "alerts"
+consumer:
+  group_id: "fraud-detection-group"
+  auto_offset_reset: "earliest"
+producer:
+  speed_multiplier: 10
+  demo_mode: true

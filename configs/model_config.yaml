@@ -1,0 +1,26 @@
+isolation_forest:
+  n_estimators: 200
+  contamination: 0.035
+  max_features: 0.8
+  max_samples: 0.8
+  random_state: 42
+
+autoencoder:
+  input_dim: null
+  encoder_dims: [128, 64, 32]
+  decoder_dims: [32, 64, 128]
+  dropout: 0.2
+  learning_rate: 0.001
+  batch_size: 256
+  epochs: 50
+  early_stopping_patience: 5
+
+ensemble:
+  iso_weight: 0.4
+  ae_weight: 0.6
+  thresholds:
+    low: 0.3
+    high: 0.7
+  cost:
+    false_positive: 50
+    false_negative: 500

@@ -1,0 +1,7 @@
+-r requirements.txt
+pytest>=7.0
+pytest-cov
+pytest-asyncio
+ruff
+mypy
+httpx
