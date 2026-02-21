@@ -32,6 +32,7 @@ def mock_stream_processor():
         "risk_tier": "LOW",
         "iso_score": 0.2,
         "ae_score": 0.3,
+        "xgb_score": 0.2,
         "should_alert": False,
         "processing_time_ms": 5.0,
     }

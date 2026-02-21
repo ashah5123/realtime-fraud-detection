@@ -20,7 +20,7 @@ An end-to-end real-time fraud detection system that processes streaming credit c
 ## ✨ Key Features
 
 - **Real-Time Streaming**: Kafka-compatible pipeline with local file simulation for development
-- **Ensemble ML**: Semi-supervised Isolation Forest + PyTorch Autoencoder trained on non-fraud data only
+- **Ensemble ML**: Semi-supervised Isolation Forest + PyTorch Autoencoder + Supervised XGBoost with optimized weighting
 - **25 Engineered Features**: Geospatial (haversine distance), velocity (transaction frequency), behavioral (amount patterns), temporal (hour, day, weekend)
 - **Sub-10ms Scoring**: FastAPI serving with 8.2ms average prediction latency
 - **Drift Detection**: Population Stability Index (PSI) based feature and prediction drift monitoring
@@ -36,8 +36,9 @@ An end-to-end real-time fraud detection system that processes streaming credit c
 | Model | ROC-AUC | PR-AUC | F1 | Precision | Recall |
 |-------|---------|--------|----|-----------|--------|
 | Isolation Forest | 0.906 | 0.538 | 0.622 | 0.737 | 0.539 |
-| Autoencoder | 0.868 | 0.257 | 0.419 | - | - |
-| **Ensemble** | **0.906** | **0.538** | **0.622** | **0.737** | **0.539** |
+| Autoencoder | 0.851 | 0.262 | 0.426 | - | - |
+| XGBoost | 0.950 | 0.660 | 0.345 | 0.222 | 0.769 |
+| **Ensemble** | **0.978** | **0.727** | **0.720** | **0.750** | **0.692** |
 
 *Trained on 8K stratified sample (1.7% fraud rate). Pipeline designed to scale to millions of transactions.*
 
@@ -45,7 +46,7 @@ An end-to-end real-time fraud detection system that processes streaming credit c
 
 | Category | Technologies |
 |----------|-------------|
-| **ML/DL** | Scikit-learn, PyTorch, NumPy, Pandas |
+| **ML/DL** | Scikit-learn, PyTorch, XGBoost, NumPy, Pandas |
 | **API** | FastAPI, Pydantic, Uvicorn |
 | **Streaming** | Confluent-Kafka, JSON Lines |
 | **Infrastructure** | Docker, Docker Compose |

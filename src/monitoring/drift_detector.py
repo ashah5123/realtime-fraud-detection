@@ -355,6 +355,7 @@ if __name__ == "__main__":
     # Load models and get scores
     iso_path = artifacts_dir / "isolation_forest.joblib"
     ae_path = artifacts_dir / "autoencoder.pt"
+    xgb_path = artifacts_dir / "xgboost.joblib"
     ensemble_path = artifacts_dir / "ensemble.joblib"
     if not iso_path.exists() or not ae_path.exists() or not ensemble_path.exists():
         logger.error("Model artifacts not found. Run training first: python -m src.models.trainer")
@@ -363,10 +364,15 @@ if __name__ == "__main__":
     iso = IsolationForestModel.load(iso_path)
     ae = FraudAutoencoder.load(ae_path)
     ensemble = EnsembleScorer.load(ensemble_path)
+    xgb = None
+    if xgb_path.exists():
+        from src.models.xgboost_model import XGBoostFraudModel
+        xgb = XGBoostFraudModel.load(xgb_path)
 
     train_iso = iso.score(X_train)
     train_ae = ae.score(X_train.values)
-    train_scores = ensemble.score_batch(train_iso, train_ae)
+    train_xgb = xgb.predict_proba(X_train) if xgb is not None else np.zeros(len(X_train))
+    train_scores = ensemble.score_batch(train_iso, train_ae, train_xgb)
 
     # Fit drift baseline from training data
     detector = DriftDetector(baseline_path=artifacts_dir / "drift_baseline.joblib")
@@ -375,7 +381,8 @@ if __name__ == "__main__":
     # Simulate drift: score test set as "current" distribution
     test_iso = iso.score(X_test)
     test_ae = ae.score(X_test.values)
-    current_scores = ensemble.score_batch(test_iso, test_ae)
+    test_xgb = xgb.predict_proba(X_test) if xgb is not None else np.zeros(len(X_test))
+    current_scores = ensemble.score_batch(test_iso, test_ae, test_xgb)
 
     result = detector.detect(X_test, current_scores)
     logger.info("Drift detection result: overall_status=%s", result["overall_status"])

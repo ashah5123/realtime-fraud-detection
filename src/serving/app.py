@@ -38,6 +38,7 @@ class PredictionOutput(BaseModel):
     risk_tier: str
     iso_score: float
     ae_score: float
+    xgb_score: float
     should_alert: bool
     processing_time_ms: float
 

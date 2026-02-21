@@ -320,7 +320,7 @@ class FraudAutoencoder:
             Loaded FraudAutoencoder instance.
         """
         path = Path(path)
-        state = torch.load(path, map_location="cpu", weights_only=True)
+        state = torch.load(path, map_location="cpu", weights_only=False)
         obj = cls(config_path=config_path, artifact_path=path, device=device)
         obj._input_dim = state["input_dim"]
         obj._encoder_dims = state["encoder_dims"]

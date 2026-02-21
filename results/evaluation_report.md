@@ -5,8 +5,8 @@
 | Model | PR-AUC | ROC-AUC | Optimal Threshold | Precision | Recall | F1 |
 |-------|--------|---------|-------------------|-----------|--------|-----|
 | Isolation Forest | 0.5381 | 0.9055 | 0.671 | 0.7368 | 0.5385 | 0.6222 |
-| Autoencoder | 0.2566 | 0.8677 | 1.000 | 0.3611 | 0.5000 | 0.4194 |
-| Ensemble | 0.5381 | 0.9055 | 0.671 | 0.7368 | 0.5385 | 0.6222 |
+| Autoencoder | 0.2620 | 0.8505 | 1.000 | 0.3714 | 0.5000 | 0.4262 |
+| Ensemble | 0.7271 | 0.9784 | 0.514 | 0.7500 | 0.6923 | 0.7200 |
 
 ## 2. Cost-Benefit Analysis
 
@@ -15,8 +15,8 @@ Costs: FP = $50, FN = $500
 | Model | Cost-Optimal Threshold | Cost at Optimal | Cost at Default (0.5) |
 |-------|-------------------------|-----------------|------------------------|
 | Isolation Forest | 0.55 | $5300 | $5700 |
-| Autoencoder | 0.51 | $6600 | $6700 |
-| Ensemble | 0.55 | $5300 | $5700 |
+| Autoencoder | 0.55 | $6450 | $6800 |
+| Ensemble | 0.51 | $3900 | $4200 |
 
 ## 3. Visualizations
 

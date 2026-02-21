@@ -460,17 +460,22 @@ def _main() -> None:
     X_val, y_val = store.transform(val_df)
     y_val_arr = np.asarray(y_val).ravel().astype(int)
 
+    from src.models.xgboost_model import XGBoostFraudModel
+
     iso = IsolationForestModel()
     iso.fit(X_train, y_train)
     ae = FraudAutoencoder()
     ae.fit(X_train.values, y_train.values)
+    xgb = XGBoostFraudModel()
+    xgb.fit(X_train, y_train, X_val=X_val, y_val=y_val, verbose=False)
     iso_val = iso.score(X_val)
     ae_val = ae.score(X_val.values)
+    xgb_val = xgb.predict_proba(X_val)
 
     ensemble = EnsembleScorer()
-    ensemble.optimize_weights(iso_val, ae_val, y_val_arr)
-    ensemble.optimize_threshold(iso_val, ae_val, y_val_arr, method="cost")
-    ens_val = ensemble.score_batch(iso_val, ae_val)
+    ensemble.optimize_weights(iso_val, ae_val, xgb_val, y_val_arr)
+    ensemble.optimize_threshold(iso_val, ae_val, xgb_val, y_val_arr, method="cost")
+    ens_val = ensemble.score_batch(iso_val, ae_val, xgb_val)
 
     metrics, costs = run_full_evaluation(
         y_val_arr,

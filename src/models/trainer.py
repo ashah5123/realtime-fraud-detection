@@ -16,6 +16,7 @@ from src.models.autoencoder import FraudAutoencoder
 from src.models.ensemble import EnsembleScorer
 from src.models.evaluator import run_full_evaluation
 from src.models.isolation_forest import IsolationForestModel
+from src.models.xgboost_model import XGBoostFraudModel
 
 logger = logging.getLogger(__name__)
 
@@ -111,17 +112,31 @@ class Trainer:
         ae.save()
         logger.info("Step 5: Autoencoder trained and saved in %.2fs", time.perf_counter() - t0)
 
+        # 5b. XGBoost: fit on train, save
+        t0 = time.perf_counter()
+        xgb = XGBoostFraudModel(artifact_path=self.artifacts_dir / "xgboost.joblib")
+        xgb.fit(
+            X_train,
+            y_train,
+            X_val=X_val,
+            y_val=y_val,
+            verbose=False,
+        )
+        xgb.save()
+        logger.info("Step 5b: XGBoost trained and saved in %.2fs", time.perf_counter() - t0)
+
         # 6. Ensemble: optimize weights and threshold on val, save
         t0 = time.perf_counter()
         iso_val = iso.score(X_val)
         ae_val = ae.score(X_val.values)
+        xgb_val = xgb.predict_proba(X_val)
         y_val_arr = np.asarray(y_val).ravel().astype(int)
 
         ensemble = EnsembleScorer(artifact_path=self.artifacts_dir / "ensemble.joblib")
-        ensemble.optimize_weights(iso_val, ae_val, y_val_arr)
-        ensemble.optimize_threshold(iso_val, ae_val, y_val_arr, method="cost")
+        ensemble.optimize_weights(iso_val, ae_val, xgb_val, y_val_arr)
+        ensemble.optimize_threshold(iso_val, ae_val, xgb_val, y_val_arr, method="cost")
         ensemble.save()
-        ens_val = ensemble.score_batch(iso_val, ae_val)
+        ens_val = ensemble.score_batch(iso_val, ae_val, xgb_val)
         logger.info("Step 6: Ensemble optimized and saved in %.2fs", time.perf_counter() - t0)
 
         # 7. Evaluation: metrics, plots, report

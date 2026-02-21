@@ -81,7 +81,7 @@ class StreamProcessor:
         features = self._store.transform_single(raw_transaction)
         iso_score = self._iso.predict_single(features)
         ae_score = self._ae.predict_single(features)
-        result = self._ensemble.score_transaction(iso_score, ae_score)
+        result = self._ensemble.score_transaction(iso_score, ae_score, features=features)
         elapsed_ms = (time.perf_counter() - t0) * 1000
 
         self._total_processed += 1
@@ -96,6 +96,7 @@ class StreamProcessor:
             "risk_tier": result["risk_tier"],
             "iso_score": result["iso_score"],
             "ae_score": result["ae_score"],
+            "xgb_score": result["xgb_score"],
             "should_alert": result["should_alert"],
             "processing_time_ms": round(elapsed_ms, 2),
         }
